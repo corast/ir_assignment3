@@ -7,7 +7,6 @@ import string
 import codecs
 import warnings
 
-
 from nltk.stem.porter import PorterStemmer
 
 #Partition file into separate paragraphs. Paragraphs are text chunks separated by empty line.
