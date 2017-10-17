@@ -39,10 +39,8 @@ def tokenize_and_clean_text(t_file):
     t_p_text_orig = []
     #Tokenize paragraphs into list of words
 
-    #TODO: fiks ord som henger sammen med bildestrek, som egentlig skal være unike ord.
-
     #Table of characters to remove from our string
-    table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t"))
+    table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t£"))
 
     for para in t_file:
         """ Remove (filter out) paragraphs containing the word “Gutenberg” (=headers and footers)"""
@@ -50,18 +48,21 @@ def tokenize_and_clean_text(t_file):
             continue
         #turn paragraph into lowercase letters.
         para_lower = para.lower()
+
+        #Since we are dealing with whole paragraphs at a time, removing \n from the paragraph, merges two words together
+        #To handle this we just need to replace \n with a space ' '
+        para_lower = para_lower.replace('\n',' ')
+
+        #if the paragrahp contains '-' with words like a-hunter i par[0], we need to specificly handle it
+        if para_lower.__contains__('-'):
+            para_lower = para_lower.replace("-"," ")
+
+
         #clean the text of paragraphs and \n\r\t characters
-        #print("cleaning:", para_lower)
-        for word in para_lower:
-            if word.__contains__('-'):
-                print(para_lower)
-                #print(word)
-        
         para_clean = para_lower.translate(table)
 
-        #print("cleaned:",para_clean)
-
-        t_p_text_orig.append(para_clean)   
+        #Keep copy of the original paragrahp unaltered.
+        t_p_text_orig.append(para)   
 
         #Add the list split into words to the list
         t_p_text.append(para_clean.split())
@@ -85,6 +86,12 @@ def stemming(file):
 
     return file
 
+def stemming_q(query):
+    stemmer = PorterStemmer()
+    for i_index, word in enumerate(query):
+        query[i_index] = stemmer.stem(word)
+    return query
+
 
 """file_p_t_s = stemming(file_p_t)"""
 
@@ -93,10 +100,8 @@ def stemming(file):
 def build_dictionary(document):
     """ Build dictionary from a document where each paragragh is a list of words. """
     dictionary = gensim.corpora.Dictionary(document)
-    dictionary.save('testing.dict')
+    #dictionary.save('testing.dict')
     return dictionary
-
-
 
 #start_time = time.time()
 #dictionary = gensim.corpora.Dictionary(file_p_t_s)
@@ -104,9 +109,7 @@ def build_dictionary(document):
 #print("Det tok:",format(elapse_time))
 
 """dictionary = build_dictionary(file_p_t_s)"""
-#print(dictionary)
 
-#print(stopwords.read())
 
 def create_stopword_list():
     """ read from the buffer and split at the character ',' returning list of stopwords """
