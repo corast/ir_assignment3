@@ -6,7 +6,7 @@ file = codecs.open("pg3300.txt","r","utf-8")
 
 """  
     #########################################
-    # art 1, Data loading and preprocessing #
+    # Part 1, Data loading and preprocessing #
     #########################################
 """
 file_p_t, file_p_t_orig = ir.tokenize_and_clean_text(ir.paragrahp_file(file))
@@ -93,8 +93,10 @@ query_bow = dictionary.doc2bow(query_p)
 
 #convert BOW to TD-IDF representation.
 #tfidf_model_q = gensim.models.TfidfModel(query_bow)
-tfidf_corpus_q = tfidf_model[query_bow]
-print(tfidf_corpus_q)
+query_tfidf  = tfidf_model[query_bow]
+query_lsi = lsi_model[query_tfidf]
+print(query_tfidf)
+print(query_lsi)
 
 #print(dictionary.token2id)
 print(dictionary)
