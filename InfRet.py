@@ -39,18 +39,27 @@ def tokenize_and_clean_text(t_file):
     t_p_text_orig = []
     #Tokenize paragraphs into list of words
 
+    #TODO: fiks ord som henger sammen med bildestrek, som egentlig skal være unike ord.
+
     #Table of characters to remove from our string
     table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t"))
 
     for para in t_file:
-        #paragraph = []
         """ Remove (filter out) paragraphs containing the word “Gutenberg” (=headers and footers)"""
         if para.__contains__('Gutenberg') or para.__contains__('gutenberg'):
             continue
         #turn paragraph into lowercase letters.
         para_lower = para.lower()
         #clean the text of paragraphs and \n\r\t characters
+        #print("cleaning:", para_lower)
+        for word in para_lower:
+            if word.__contains__('-'):
+                print(para_lower)
+                #print(word)
+        
         para_clean = para_lower.translate(table)
+
+        #print("cleaned:",para_clean)
 
         t_p_text_orig.append(para_clean)   
 
