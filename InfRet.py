@@ -22,7 +22,7 @@ def paragrahp_file(file):
     """ Pre process file and return all paragraphs in an list"""
     text = []
     paragraph = ""
-    for line in f:
+    for line in file:
         #continue if line.isspace()
         if(line.isspace()):
             if(paragraph != ""):
@@ -120,3 +120,18 @@ def remove_stopwords(dictionary, stoplist):
     return dictionary
 
 """remove_stopwords(dictionary, stopword_list)"""
+
+#preprosess query
+def preprocessing(query):
+    """ Remove punctiation, tokenize, stemming """
+    #Table of characters to remove from our string
+    table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t"))
+
+    #turn query into lowercase letters.
+    para_lower = query.lower()
+
+    #clean the text of the query and \n\r\t characters
+    para_clean = para_lower.translate(table)
+
+    #Return tokenized cleander query.
+    return para_clean.split()
