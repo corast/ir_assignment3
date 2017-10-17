@@ -11,11 +11,6 @@ import warnings
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 import gensim 
 
-import time
-
-#Partition file into separate paragraphs. Paragraphs are text chunks separated by empty line.
-#Partitioning result should be a list of paragraphs. For us, each paragraph will be a separate document.
-
 # p - paragraphed, t - tokenized and cleaned of characters, s - stemmed
 
 def paragrahp_file(file):
@@ -103,10 +98,6 @@ def build_dictionary(document):
     #dictionary.save('testing.dict')
     return dictionary
 
-#start_time = time.time()
-#dictionary = gensim.corpora.Dictionary(file_p_t_s)
-#elapse_time = time.time() - start_time
-#print("Det tok:",format(elapse_time))
 
 """dictionary = build_dictionary(file_p_t_s)"""
 
