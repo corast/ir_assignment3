@@ -28,17 +28,17 @@ def paragrahp_file(file):
     return text
 
 def tokenize_and_clean_text(t_file):
-    """Tokenizs the text and remove paragrahs containing Gutenberg """
-    #Empty array.
+    """Tokenize the text, clean and remove paragraphs containing (G/g)utenberg  """
+    #Empty arrays for storage.
     t_p_text = []
     t_p_text_orig = []
-    #Tokenize paragraphs into list of words
 
-    #Table of characters to remove from our string
+    #Table of characters to remove from our string, since not every character is present from string.punction, 
+    # we have to add some extra, like newline, rawtext, tabs and some special once like the pound sign(probably more hidden in the text)
     table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t£"))
 
     for para in t_file:
-        """ Remove (filter out) paragraphs containing the word “Gutenberg” (=headers and footers)"""
+        #Remove paragraphs that contains the word “Gutenberg” or “gutenberg”
         if para.__contains__('Gutenberg') or para.__contains__('gutenberg'):
             continue
         #turn paragraph into lowercase letters.
@@ -48,7 +48,7 @@ def tokenize_and_clean_text(t_file):
         #To handle this we just need to replace \n with a space ' '
         para_lower = para_lower.replace('\n',' ')
 
-        #if the paragrahp contains '-' with words like a-hunter i par[0], we need to specificly handle it
+        #if the paragrahp contains '-' with words like a-hunter in paragraph[0], we need to specificly handle it
         if para_lower.__contains__('-'):
             para_lower = para_lower.replace("-"," ")
 
@@ -64,14 +64,6 @@ def tokenize_and_clean_text(t_file):
 
     return t_p_text, t_p_text_orig
 
-
-"""f = codecs.open("pg3300.txt","r","utf-8")"""
-
-#file_p_t_orig er originalen hvor vi ikke har klippet bort stemming
-"""file_p_t, file_p_t_orig = tokenize_and_clean_text(paragrahp_file(f))"""
-
-#file_p_t is the file where each paragraph is in list form.
-
 def stemming(file):
     """ Return words to their origin word. """
     stemmer = PorterStemmer()
@@ -82,38 +74,32 @@ def stemming(file):
     return file
 
 def stemming_q(query):
+    """ Return a query which is stemmed """
     stemmer = PorterStemmer()
     for i_index, word in enumerate(query):
         query[i_index] = stemmer.stem(word)
     return query
 
 
-"""file_p_t_s = stemming(file_p_t)"""
-
 # Part 2, Dictionary building
 
 def build_dictionary(document):
     """ Build dictionary from a document where each paragragh is a list of words. """
     dictionary = gensim.corpora.Dictionary(document)
-    #dictionary.save('testing.dict')
     return dictionary
 
 
-"""dictionary = build_dictionary(file_p_t_s)"""
-
 
 def create_stopword_list():
-    """ read from the buffer and split at the character ',' returning list of stopwords """
+    """ read from the file and split at the character ',' returning list of stopwords """
     stopwords = codecs.open("common-english-words.txt","r","utf-8")
     s_file = stopwords.read()
     return s_file.split(',')
 
-"""stopword_list = create_stopword_list()"""
-
-
 
 #Remove stopwords.
 def remove_stopwords(dictionary, stoplist):
+    """ remove stopwords """
     stop_ids = []
     for stopword in stoplist:
         if stopword in dictionary.token2id:
@@ -122,11 +108,10 @@ def remove_stopwords(dictionary, stoplist):
     dictionary.filter_tokens(stop_ids)
     return dictionary
 
-"""remove_stopwords(dictionary, stopword_list)"""
 
 #preprosess query
 def preprocessing(query):
-    """ Remove punctiation, tokenize, stemming """
+    """ Remove punctiation, tokenize, lowercase """
     #Table of characters to remove from our string
     table = str.maketrans(dict.fromkeys(string.punctuation+"\n\r\t"))
 
@@ -136,5 +121,5 @@ def preprocessing(query):
     #clean the text of the query and \n\r\t characters
     para_clean = para_lower.translate(table)
 
-    #Return tokenized cleander query.
+    #Return tokenized query.
     return para_clean.split()
